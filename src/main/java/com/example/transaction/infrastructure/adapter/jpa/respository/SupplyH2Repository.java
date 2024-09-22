@@ -19,6 +19,7 @@ public class SupplyH2Repository implements SupplyRepository {
     @Override
     public Supply create(Supply request) {
         SupplyEntity userToSave = supplyDboMapper.toDatabase(request);
+        userToSave.setDate(request.getDate());
         SupplyEntity userSaved = supplySpringJpaAdapterRepository.save(userToSave);
         return supplyDboMapper.toDomain(userSaved);
     }
@@ -26,6 +27,7 @@ public class SupplyH2Repository implements SupplyRepository {
     @Override
     public Supply update(Supply request) {
         SupplyEntity userToUpdate = supplyDboMapper.toDatabase(request);
+
         SupplyEntity userUpdate = supplySpringJpaAdapterRepository.save(userToUpdate);
         return supplyDboMapper.toDomain(userUpdate);
     }

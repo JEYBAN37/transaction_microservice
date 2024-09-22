@@ -18,7 +18,6 @@ public class SupplyCreateService {
     private final SupplyDao supplyDao;
 
     private static final String MESSAGE_ERROR_ADD = "Supply Exist";
-    private static final String PUBLISHER_TOPIC = "Supply Exist";
 
     public Supply execute(SupplyCreateCommand createCommand) {
         validateParams(createCommand);

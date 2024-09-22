@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -19,22 +19,23 @@ public class Supply {
     private SupplyQuantity quantity;
     private SupplyState state;
     private BigDecimal price;
-    private String date;
+    private SupplyDate date;
 
-    public Supply(Long id, Long idArticle, int quantity, String state ,BigDecimal price, String date){
+    public Supply(Long id, Long idArticle, int quantity, String state ,BigDecimal price){
         this.id = id;
         this.idArticle = SupplyIdArticle.of(idArticle);
         this.quantity = SupplyQuantity.of(quantity);
         this.state = SupplyState.of(state);
         this.price = price;
-        this.date = date;
+        this.date = SupplyDate.of();
     }
     public Supply requestToCreate(SupplyCreateCommand supplyCreateCommand)
     {
         this.idArticle = SupplyIdArticle.of(supplyCreateCommand.getIdArticle());
         this.quantity = SupplyQuantity.of(supplyCreateCommand.getQuantity());
         this.state = SupplyState.of(supplyCreateCommand.getState());
-        this.date = supplyCreateCommand.getDate();
+        this.date = SupplyDate.of();
+        this.price = supplyCreateCommand.getPrice();
         return this;
     }
 
@@ -45,5 +46,6 @@ public class Supply {
         return quantity.getQuantity();
     }
     public String getState() {return state.getState();}
+    public LocalDateTime getDate() {return date.getDate();}
 }
 

@@ -5,10 +5,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @Entity
-@Table(name = "users")
+@Table(name = "transaction")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,5 +23,5 @@ public class SupplyEntity {
     private int quantity;
     private String state;
     private BigDecimal price;
-    private String date;
+    private LocalDateTime date;
 }

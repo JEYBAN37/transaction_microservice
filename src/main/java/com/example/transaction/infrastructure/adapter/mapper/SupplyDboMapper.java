@@ -34,8 +34,7 @@ public SupplyEntity toDatabase (Supply domain){
                 entity.getIdArticle(),
                 entity.getQuantity(),
                 entity.getState(),
-                entity.getPrice(),
-                entity.getDate()
+                entity.getPrice()
                 );
     }
 

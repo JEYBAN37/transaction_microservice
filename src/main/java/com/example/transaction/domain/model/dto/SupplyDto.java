@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,5 +19,5 @@ public class SupplyDto {
     private int quantity;
     private String state;
     private BigDecimal price;
-    private String date;
+    private LocalDateTime date;
 }
