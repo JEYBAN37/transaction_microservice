@@ -1,12 +1,8 @@
 package com.example.transaction.infrastructure.adapter.entity;
-
-
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "transaction")

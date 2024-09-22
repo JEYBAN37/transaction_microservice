@@ -1,5 +1,4 @@
 package com.example.transaction.infrastructure.adapter.jpa.respository;
-
 import com.example.transaction.domain.model.entity.Supply;
 import com.example.transaction.domain.port.repository.SupplyRepository;
 import com.example.transaction.infrastructure.adapter.entity.SupplyEntity;
@@ -27,7 +26,6 @@ public class SupplyH2Repository implements SupplyRepository {
     @Override
     public Supply update(Supply request) {
         SupplyEntity userToUpdate = supplyDboMapper.toDatabase(request);
-
         SupplyEntity userUpdate = supplySpringJpaAdapterRepository.save(userToUpdate);
         return supplyDboMapper.toDomain(userUpdate);
     }

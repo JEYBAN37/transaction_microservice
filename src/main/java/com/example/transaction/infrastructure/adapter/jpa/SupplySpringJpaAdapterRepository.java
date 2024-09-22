@@ -3,7 +3,6 @@ import com.example.transaction.infrastructure.adapter.entity.SupplyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
 

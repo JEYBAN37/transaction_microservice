@@ -6,11 +6,8 @@ import com.example.transaction.domain.model.exception.SupplyException;
 import com.example.transaction.domain.port.dao.SupplyDao;
 import com.example.transaction.domain.port.publisher.SupplyPublisher;
 import com.example.transaction.domain.port.repository.SupplyRepository;
-
 import lombok.AllArgsConstructor;
-
 import java.util.List;
-
 
 @AllArgsConstructor
 public class SupplyCreateService {
@@ -21,22 +18,18 @@ public class SupplyCreateService {
     private static final String MESSAGE_ERROR_ADD = "Supply Exist";
 
     public List<Supply> execute(List<SupplyCreateCommand> createCommands) {
-
         if (createCommands.isEmpty())
-           throw  new SupplyException("List Empty");
-
+           throw new SupplyException("List Empty");
         return createCommands.stream()
                 .map(this::processCreateCommand)
                 .toList();
     }
 
     private Supply processCreateCommand(SupplyCreateCommand createCommand) {
-        validateParams(createCommand); // Validar parámetros
-
-        Supply supplyToCreate = createSupply(createCommand); // Crear el objeto Supply
-        publishSupplyMessage(createCommand); // Publicar el mensaje
-
-        return supplyRepository.create(supplyToCreate); // Guardar y retornar el suministro creado
+        validateParams(createCommand);
+        Supply supplyToCreate = createSupply(createCommand);
+        publishSupplyMessage(createCommand);
+        return supplyRepository.create(supplyToCreate);
     }
 
     private Supply createSupply(SupplyCreateCommand createCommand) {
