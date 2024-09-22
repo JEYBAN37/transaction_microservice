@@ -7,6 +7,8 @@ import com.example.transaction.domain.service.SupplyCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class SupplyCreateHandler {
     private final SupplyCreateService supplyCreateService;
@@ -19,8 +21,10 @@ public class SupplyCreateHandler {
         this.supplyDtoMapper = supplyDtoMapper;
     }
 
-    public SupplyDto execute (SupplyCreateCommand createCommand){
-        return supplyDtoMapper.toDto(supplyCreateService.execute(createCommand));
+    public List<SupplyDto> execute (List<SupplyCreateCommand> createCommand){
+        return supplyCreateService.execute(createCommand).stream()
+                .map(supplyDtoMapper::toDto)
+                .toList();
     }
 
 }

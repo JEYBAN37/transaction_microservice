@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin/")
 @AllArgsConstructor
@@ -24,7 +26,7 @@ public class SupplyCommandController {
             @ApiResponse(responseCode = "409", content = @Content)
     })
     @PostMapping("addSupply/")
-    public SupplyDto addSupply (@RequestBody SupplyCreateCommand createCommand){
+    public List<SupplyDto> addSupply (@RequestBody  List<SupplyCreateCommand>  createCommand){
         return supplyCreateHandler.execute(createCommand);
     }
 }

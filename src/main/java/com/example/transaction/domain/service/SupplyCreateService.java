@@ -9,6 +9,7 @@ import com.example.transaction.domain.port.repository.SupplyRepository;
 
 import lombok.AllArgsConstructor;
 
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -19,21 +20,37 @@ public class SupplyCreateService {
 
     private static final String MESSAGE_ERROR_ADD = "Supply Exist";
 
-    public Supply execute(SupplyCreateCommand createCommand) {
-        validateParams(createCommand);
-        Supply supplyToCreate = new Supply().requestToCreate(createCommand);
+    public List<Supply> execute(List<SupplyCreateCommand> createCommands) {
 
+        if (createCommands.isEmpty())
+           throw  new SupplyException("List Empty");
+
+        return createCommands.stream()
+                .map(this::processCreateCommand)
+                .toList();
+    }
+
+    private Supply processCreateCommand(SupplyCreateCommand createCommand) {
+        validateParams(createCommand); // Validar parámetros
+
+        Supply supplyToCreate = createSupply(createCommand); // Crear el objeto Supply
+        publishSupplyMessage(createCommand); // Publicar el mensaje
+
+        return supplyRepository.create(supplyToCreate); // Guardar y retornar el suministro creado
+    }
+
+    private Supply createSupply(SupplyCreateCommand createCommand) {
+        return new Supply().requestToCreate(createCommand);
+    }
+
+    private void publishSupplyMessage(SupplyCreateCommand createCommand) {
         MessageSupply messageSupply = new MessageSupply(
                 createCommand.getIdArticle(),
                 createCommand.getQuantity(),
                 createCommand.getPrice()
         );
-
         supplyPublisher.publishMessage(messageSupply);
-
-        return supplyRepository.create(supplyToCreate);
     }
-
 
     private void validateParams(SupplyCreateCommand createCommand) {
         if (createCommand.getId() != null && supplyDao.idExist(createCommand.getId()))
