@@ -1,7 +1,9 @@
 package com.example.transaction.infrastructure.adapter.securityconfig;
 
+import com.example.transaction.application.interfaces.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -9,10 +11,12 @@ import java.util.List;
 import java.util.function.Function;
 
 @Component
-public class JwtClient {
+public class JwtClient implements JwtService {
 
-    private static final String SECRET_KEY = "294A404E635266556A586E327235753878214125442A472D4B6150645367566B";
-
+    private final String secretKey;
+    public JwtClient (@Value("${jwt.secret-key}") String secretKey ){
+        this.secretKey = secretKey;
+    }
 
     public List<String> extractRoles(String token) {
         return extractClaim(token, claims -> claims.get("roles", List.class));
@@ -42,10 +46,14 @@ public class JwtClient {
 
 
     private Key getSignInKey() {
-        byte[] keyBytes = hexStringToByteArray(SECRET_KEY);
+        byte[] keyBytes = hexStringToByteArray(secretKey);
         return io.jsonwebtoken.security.Keys.hmacShaKeyFor(keyBytes);
     }
 
+    @Override
+    public Integer extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("id", Integer.class));
+    }
 
     private byte[] hexStringToByteArray(String s) {
         int len = s.length();

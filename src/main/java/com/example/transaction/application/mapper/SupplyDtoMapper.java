@@ -9,6 +9,7 @@ public interface SupplyDtoMapper {
     @Mapping(source = "idArticle", target = "idArticle")
     @Mapping(source = "quantity", target = "quantity")
     @Mapping(source = "state", target = "state")
+    @Mapping(source = "price", target = "price")
     @Mapping(source = "date", target = "date")
     SupplyDto toDto (Supply objectOfDomain);
 }

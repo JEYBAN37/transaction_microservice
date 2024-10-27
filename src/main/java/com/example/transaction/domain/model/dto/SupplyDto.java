@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 public class SupplyDto {
     private Long id;
-    private Long idArticle;
+    private Integer idArticle;
     private int quantity;
     private String state;
     private BigDecimal price;

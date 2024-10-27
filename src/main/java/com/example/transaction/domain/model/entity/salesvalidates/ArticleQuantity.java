@@ -1,28 +1,29 @@
-package com.example.transaction.domain.model.entity.supplyvalidates;
+package com.example.transaction.domain.model.entity.salesvalidates;
 
 import com.example.transaction.domain.model.exception.SupplyException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 import static com.example.transaction.domain.model.constant.SupplyConstant.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
-public class SupplyQuantity {
-
+public class ArticleQuantity {
     Integer quantity;
-    private SupplyQuantity(int quantity) {
+
+    private ArticleQuantity(Integer quantity){
         this.quantity = quantity;
     }
-    public static SupplyQuantity of (Integer quantity){
+    public static ArticleQuantity of (Integer quantity) {
         toValidQuantity(quantity);
-        return new SupplyQuantity(quantity);
+        return new ArticleQuantity(quantity);
     }
+
     private static void toValidQuantity(Integer quantity) {
-        if(quantity == null )
+        if( quantity == null )
             throw new SupplyException(QUANTITY_MANDATORY);
-        if (quantity <= ZERO_CONSTANT) {
+        if (quantity < ZERO_CONSTANT)
             throw new SupplyException(QUANTITY_MESSAGE_MIN_ERROR);
-        }
     }
 }

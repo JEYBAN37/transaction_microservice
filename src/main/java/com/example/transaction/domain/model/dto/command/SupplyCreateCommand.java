@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 public class SupplyCreateCommand {
     private Long id;
-    private Long idArticle;
+    private Integer idArticle;
     private int quantity;
     private String state;
     private BigDecimal price;

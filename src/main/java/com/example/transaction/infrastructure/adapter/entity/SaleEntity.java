@@ -1,23 +1,31 @@
 package com.example.transaction.infrastructure.adapter.entity;
+
+import com.example.transaction.domain.model.entity.salesvalidates.State;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "sale")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
 @Setter
-public class SupplyEntity {
+@Builder
+public class SaleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer idArticle;
+
+    private Long idArticle;
+    private Long idUser;
     private int quantity;
-    private String state;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private State state;
+
     private BigDecimal price;
     private LocalDateTime date;
 }

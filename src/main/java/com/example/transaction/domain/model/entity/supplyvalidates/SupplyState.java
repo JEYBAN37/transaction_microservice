@@ -3,13 +3,11 @@ package com.example.transaction.domain.model.entity.supplyvalidates;
 import com.example.transaction.domain.model.exception.SupplyException;
 import lombok.Getter;
 
+import static com.example.transaction.domain.model.constant.SupplyConstant.*;
+
 
 @Getter
 public class SupplyState {
-    private static final int MAXIMUM_ALLOW_LETTERS = 50;
-    private static final String MESSAGE_MANDATORY = "state is mandatory";
-    private static final String MESSAGE_MAX_BIGGER = "state don't be bigger than 10 characters";
-
     String state;
 
     private SupplyState(String state) {
@@ -17,14 +15,16 @@ public class SupplyState {
     }
 
     public static SupplyState of(String state) {
-        toValidState(state);
-        return new SupplyState(state);
+        return new SupplyState(toValidState(state));
     }
 
-    private static void toValidState(String state){
+    private static String toValidState(String state){
         if(state == null || state.isEmpty())
             throw new SupplyException(MESSAGE_MANDATORY);
-        if(state.length() > MAXIMUM_ALLOW_LETTERS)
+        String stateTrim = state.trim();
+        if(stateTrim.length() > MAXIMUM_ALLOW_LETTERS)
             throw new SupplyException(MESSAGE_MAX_BIGGER);
+        return stateTrim;
+
     }
 }

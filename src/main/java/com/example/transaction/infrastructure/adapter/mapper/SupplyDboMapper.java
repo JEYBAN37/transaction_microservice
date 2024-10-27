@@ -52,19 +52,6 @@ public SupplyEntity toDatabase (Supply domain){
         );
     }
 
-    public SupplyDto toDto (SupplyEntity supplyEntity) {
-        if(supplyEntity == null){
-            return null;
-        }
-        return new SupplyDto(
-                supplyEntity.getId(),
-                supplyEntity.getIdArticle(),
-                supplyEntity.getQuantity(),
-                supplyEntity.getState(),
-                supplyEntity.getPrice(),
-                supplyEntity.getDate()
-        );
-    }
 
 
 }

@@ -1,10 +1,20 @@
 package com.example.transaction.infrastructure.beanconfiguration;
 
+import com.example.transaction.application.interfaces.FeignInterceptorService;
 import com.example.transaction.domain.port.dao.SupplyDao;
 import com.example.transaction.domain.port.publisher.SupplyPublisher;
+import com.example.transaction.domain.port.repository.SaleRepository;
 import com.example.transaction.domain.port.repository.SupplyRepository;
+import com.example.transaction.domain.port.services.ArticleService;
+import com.example.transaction.domain.service.BuyArticleServices;
 import com.example.transaction.domain.service.SupplyCreateService;
-
+import com.example.transaction.infrastructure.adapter.http.HttpArticleService;
+import com.example.transaction.infrastructure.adapter.http.TokenInterceptor;
+import com.example.transaction.infrastructure.adapter.http.client.ArticleClient;
+import com.example.transaction.infrastructure.adapter.http.client.FeignClientInterceptor;
+import com.example.transaction.infrastructure.adapter.mapper.SaleDboMapper;
+import feign.Logger;
+import feign.Request;
 import org.springframework.amqp.core.Queue;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.core.TopicExchange;
@@ -24,6 +34,36 @@ public class SupplyBean {
     @Bean
     public SupplyCreateService supplyCreateService(SupplyRepository supplyRepository, SupplyPublisher supplyPublisher, SupplyDao supplyDao) {
         return new SupplyCreateService(supplyRepository, supplyPublisher, supplyDao);
+    }
+
+    @Bean
+    public BuyArticleServices buyArticleServices(SaleRepository supplyRepository, ArticleService articleService) {
+        return new BuyArticleServices(supplyRepository, articleService);
+    }
+
+    @Bean
+    FeignInterceptorService feignInterceptorService(FeignClientInterceptor feignClientInterceptor){
+        return new TokenInterceptor(feignClientInterceptor);
+    }
+
+    @Bean
+    public ArticleService articleService(ArticleClient articleClient, SaleDboMapper articleDboMapper) {
+        return new HttpArticleService(articleClient,articleDboMapper);
+    }
+
+    @Bean
+    public Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
+    }
+
+    @Bean
+    public Request.Options requestOptions() {
+        return new Request.Options();
+    }
+
+    @Bean
+    public FeignClientInterceptor feignClientInterceptor() {
+        return new FeignClientInterceptor(null);
     }
 
     @Bean

@@ -7,7 +7,12 @@ import com.example.transaction.domain.port.dao.SupplyDao;
 import com.example.transaction.domain.port.publisher.SupplyPublisher;
 import com.example.transaction.domain.port.repository.SupplyRepository;
 import lombok.AllArgsConstructor;
+
+
 import java.util.List;
+
+import static com.example.transaction.domain.model.constant.SupplyConstant.LIST_EMPTY;
+import static com.example.transaction.domain.model.constant.SupplyConstant.MESSAGE_ERROR_ADD;
 
 @AllArgsConstructor
 public class SupplyCreateService {
@@ -15,11 +20,11 @@ public class SupplyCreateService {
     private final SupplyPublisher supplyPublisher;
     private final SupplyDao supplyDao;
 
-    private static final String MESSAGE_ERROR_ADD = "Supply Exist";
+
 
     public List<Supply> execute(List<SupplyCreateCommand> createCommands) {
         if (createCommands.isEmpty())
-           throw new SupplyException("List Empty");
+           throw new SupplyException(LIST_EMPTY);
         return createCommands.stream()
                 .map(this::processCreateCommand)
                 .toList();
@@ -48,6 +53,5 @@ public class SupplyCreateService {
     private void validateParams(SupplyCreateCommand createCommand) {
         if (createCommand.getId() != null && supplyDao.idExist(createCommand.getId()))
             throw new SupplyException(MESSAGE_ERROR_ADD);
-
     }
 }

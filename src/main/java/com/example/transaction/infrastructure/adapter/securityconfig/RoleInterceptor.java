@@ -19,7 +19,7 @@ public class RoleInterceptor implements HandlerInterceptor {
         this.jwtClient = jwtClient;
         rolePermissions.put("/admin/**", List.of("ROLE_ADMIN"));
         rolePermissions.put("/company/**", List.of("ROLE_AUX_BODEGA", "ROLE_ADMIN"));
-        rolePermissions.put("/secure/**", List.of("ROLE_ADMIN", "ROLE_USER", "ROLE_AUX_BODEGA"));
+        rolePermissions.put("/secure/**", List.of( "ROLE_USER","ROLE_ADMIN"));
     }
 
     @Override
@@ -58,4 +58,5 @@ public class RoleInterceptor implements HandlerInterceptor {
                 .orElse(null);
     }
 }
+
 

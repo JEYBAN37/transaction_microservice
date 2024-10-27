@@ -1,17 +1,18 @@
-package com.example.transaction.domain.model.dto.command;
+package com.example.transaction.domain.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class MessageSupply {
-    private Integer id;
+public class SaleDto {
+    private Integer idArticle;
     private int quantity;
+    private String state;
     private BigDecimal price;
+    private LocalDateTime date;
 }

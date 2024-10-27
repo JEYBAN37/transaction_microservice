@@ -18,15 +18,15 @@ public class Supply {
     private SupplyIdArticle idArticle;
     private SupplyQuantity quantity;
     private SupplyState state;
-    private BigDecimal price;
+    private SupplyPrice price;
     private SupplyDate date;
 
-    public Supply(Long id, Long idArticle, int quantity, String state ,BigDecimal price){
+    public Supply(Long id, Integer idArticle, int quantity, String state ,BigDecimal price){
         this.id = id;
         this.idArticle = SupplyIdArticle.of(idArticle);
         this.quantity = SupplyQuantity.of(quantity);
         this.state = SupplyState.of(state);
-        this.price = price;
+        this.price = SupplyPrice.of(price);
         this.date = SupplyDate.of();
     }
     public Supply requestToCreate(SupplyCreateCommand supplyCreateCommand)
@@ -35,17 +35,18 @@ public class Supply {
         this.quantity = SupplyQuantity.of(supplyCreateCommand.getQuantity());
         this.state = SupplyState.of(supplyCreateCommand.getState());
         this.date = SupplyDate.of();
-        this.price = supplyCreateCommand.getPrice();
+        this.price = SupplyPrice.of(supplyCreateCommand.getPrice());
         return this;
     }
 
-    public Long getIdArticle() {
-        return idArticle.getId();
+    public Integer getIdArticle() {
+        return idArticle.getIdArticle();
     }
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity.getQuantity();
     }
     public String getState() {return state.getState();}
     public LocalDateTime getDate() {return date.getDate();}
+    public BigDecimal getPrice (){return price.getPrice();}
 }
 

@@ -5,7 +5,6 @@ import com.example.transaction.application.mapper.SupplyDtoMapper;
 import com.example.transaction.domain.model.dto.SupplyDto;
 import com.example.transaction.domain.model.dto.command.SupplyCreateCommand;
 import com.example.transaction.domain.model.entity.Supply;
-import com.example.transaction.domain.model.exception.SupplyException;
 import com.example.transaction.domain.service.SupplyCreateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,12 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class SupplyCreateHandlerTest {
+ class SupplyCreateHandlerTest {
 
     @Mock
     private SupplyCreateService supplyCreateService;
@@ -26,120 +26,49 @@ class SupplyCreateHandlerTest {
     @Mock
     private SupplyDtoMapper supplyDtoMapper;
 
-    @Mock
-    private JwtPort jwtService;
-
     @InjectMocks
     private SupplyCreateHandler supplyCreateHandler;
-
-    private SupplyCreateCommand createCommand;
-    private Supply supply;
-    private SupplyDto supplyDto;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        createCommand = new SupplyCreateCommand();
-        createCommand.setName("John");
-        createCommand.setLastName("Doe");
-        createCommand.setDni("12345678");
-        createCommand.setTelephone("+573177722509");
-        createCommand.setDateAge(LocalDate.of(1995, 5, 15));
-        createCommand.setEmail("john.doe@example.com");
-        createCommand.setPassword("securePassword123");
-        createCommand.setRole(Role.ADMIN);
-
-        supply = new Supply();
-        supplyDto = new SupplyDto();
     }
 
-    // Test positivo: Usuario creado correctamente
     @Test
-    void test_whenCreateAndReturnUserDto_shouldReturnAuthenticationResponse() {
+     void execute_ShouldReturnSupplyDtoList_WhenCreateCommandsAreValid() {
         // Arrange
-        when(supplyCreateService.execute(createCommand,Role.ADMIN)).thenReturn(supply);
-        when(supplyDtoMapper.toDto(supply)).thenReturn(supplyDto);
-        when(jwtService.generateToken(supplyDto)).thenReturn("jwt_token");
+        SupplyCreateCommand command1 = new SupplyCreateCommand(1L,1, 10, "ESTATE" ,new BigDecimal(100.0));
+        SupplyCreateCommand command2 = new SupplyCreateCommand(2L,2, 10, "ESTATE" ,new BigDecimal(100.0));
+        Supply supply1 = new Supply(); // Suponiendo que Supply tiene un constructor vacío
+        Supply supply2 = new Supply();
+
+        // Simulación de retorno de servicios
+        when(supplyCreateService.execute(List.of(command1, command2))).thenReturn(List.of(supply1, supply2));
+        when(supplyDtoMapper.toDto(supply1)).thenReturn(new SupplyDto());
+        when(supplyDtoMapper.toDto(supply2)).thenReturn(new SupplyDto());
 
         // Act
-        AuthenticationResponse result = supplyCreateHandler.execute(createCommand);
+        List<SupplyDto> result = supplyCreateHandler.execute(List.of(command1, command2));
 
         // Assert
         assertNotNull(result);
-        assertEquals("jwt_token", result.getToken());
-        verify(supplyCreateService).execute(createCommand,Role.ADMIN);
-        verify(supplyDtoMapper).toDto(supply);
-        verify(jwtService).generateToken(supplyDto);
+        assertEquals(2, result.size());
+        verify(supplyCreateService, times(1)).execute(List.of(command1, command2));
+        verify(supplyDtoMapper, times(2)).toDto(any(Supply.class)); // Verificar que toDto fue llamado
     }
 
-    // Test negativo: Usuario ya existe (lanzar excepción)
     @Test
-    void test_whenUserAlreadyExists_shouldThrowUserException() {
+     void execute_ShouldHandleEmptySupplyList() {
         // Arrange
-        when(supplyCreateService.execute(createCommand,Role.ADMIN)).thenThrow(new SupplyException("Supply already exists"));
-
-        // Act & Assert
-        SupplyException exception = assertThrows(SupplyException.class, () -> {
-            supplyCreateHandler.execute(createCommand);
-        });
-        assertEquals("Supply already exists", exception.getErrorMessage());
-        verify(supplyCreateService).execute(createCommand,Role.ADMIN);
-        verifyNoMoreInteractions(jwtService); // El jwtService no debe ser llamado si falla la creación
-    }
-
-    // Test negativo: Error al generar el token
-    @Test
-    void test_whenTokenGenerationFails_shouldThrowException() {
-        // Arrange
-        when(supplyCreateService.execute(createCommand,Role.AUX_BODEGA)).thenReturn(supply);
-        when(supplyDtoMapper.toDto(supply)).thenReturn(supplyDto);
-        when(jwtService.generateToken(supplyDto)).thenThrow(new RuntimeException("Token generation failed"));
-
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            supplyCreateHandler.execute(createCommand);
-        });
-        assertEquals("Token generation failed", exception.getMessage());
-        verify(supplyCreateService).execute(createCommand,Role.AUX_BODEGA);
-        verify(jwtService).generateToken(supplyDto);
-    }
-
-    // Test negativo: Error durante el mapeo de Supply a SupplyDto
-    @Test
-    void test_whenUserDtoMappingFails_shouldThrowException() {
-        // Arrange
-        when(supplyCreateService.execute(createCommand,Role.ADMIN)).thenReturn(supply);
-        when(supplyDtoMapper.toDto(supply)).thenThrow(new RuntimeException("SupplyDto mapping failed"));
-
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            supplyCreateHandler.execute(createCommand);
-        });
-        assertEquals("SupplyDto mapping failed", exception.getMessage());
-        verify(supplyCreateService).execute(createCommand,Role.ADMIN);
-        verify(supplyDtoMapper).toDto(supply);
-        verifyNoMoreInteractions(jwtService); // No debe llamar a jwtService si falla el mapeo
-    }
-
-    // Test positivo: Usuario creado con rol diferente
-    @Test
-    void test_whenUserCreatedWithDifferentRole_shouldReturnAuthenticationResponse() {
-        // Arrange
-        createCommand.setRole(Role.CLIENT); // Cambiar el rol
-        when(supplyCreateService.execute(createCommand,Role.ADMIN)).thenReturn(supply);
-        when(supplyDtoMapper.toDto(supply)).thenReturn(supplyDto);
-        when(jwtService.generateToken(supplyDto)).thenReturn("jwt_token_user");
+        List<SupplyCreateCommand> createCommands = List.of();
 
         // Act
-        AuthenticationResponse result = supplyCreateHandler.execute(createCommand);
+        List<SupplyDto> result = supplyCreateHandler.execute(createCommands);
 
         // Assert
         assertNotNull(result);
-        assertEquals("jwt_token_user", result.getToken());
-        verify(supplyCreateService).execute(createCommand,Role.ADMIN);
-        verify(supplyDtoMapper).toDto(supply);
-        verify(jwtService).generateToken(supplyDto);
+        assertTrue(result.isEmpty());
+        verify(supplyCreateService, times(1)).execute(createCommands);
     }
 
 }
