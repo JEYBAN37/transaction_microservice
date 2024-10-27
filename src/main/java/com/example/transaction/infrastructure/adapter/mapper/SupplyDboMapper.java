@@ -52,6 +52,4 @@ public SupplyEntity toDatabase (Supply domain){
         );
     }
 
-
-
 }
