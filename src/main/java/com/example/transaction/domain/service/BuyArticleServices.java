@@ -8,6 +8,7 @@ import com.example.transaction.domain.port.repository.SaleRepository;
 import com.example.transaction.domain.port.services.ArticleService;
 import lombok.AllArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class BuyArticleServices {
 
         try {
 
-            List<Sale> serviceArticle = articleService.getArticlesOnlyIds(articleSaleCommands,idUser);
+            List<Sale> serviceArticle = articleService.getArticlesOnlyIds(articleSaleCommands);
 
             if (serviceArticle.isEmpty()) {
                 throw new SupplyException(TRASACTION_FAILED);
@@ -46,7 +47,17 @@ public class BuyArticleServices {
 
             List<Sale> validate = serviceArticle.stream()
                     .filter(Objects::nonNull)
+                    .map(sale -> {
+                        BigDecimal total = sale.getPrice().multiply(new BigDecimal(sale.getQuantity()));
+                        return new Sale(sale.getIdArticle(),
+                                idUser,
+                                sale.getQuantity(),
+                                State.AVAILABLE,
+                                total);
+                    })
                     .toList();
+
+
 
             Map<Long, Integer> idQuantityMap = serviceArticle.stream()
                     .collect(Collectors.toMap(Sale::getIdArticle, Sale::getQuantity));
@@ -57,26 +68,26 @@ public class BuyArticleServices {
                 .toList();
 
 
-            List<Sale> cancelSale = createSales(cancel, idUser);
+            List<Sale> cancelSale = createSales(cancel, idUser,State.FAILED);
 
             sales.addAll(validate);
             sales.addAll(cancelSale);
 
         } catch (Exception e) {
-            sales.addAll(createSales(articleSaleCommands, idUser));
+            sales.addAll(createSales(articleSaleCommands, idUser,State.FAILED));
         }
 
         return saleRepository.create(sales);
     }
 
-    private List<Sale> createSales(List<ArticleSaleCommand> buyArticleCommands, Long idUser) {
+    private List<Sale> createSales(List<ArticleSaleCommand> buyArticleCommands, Long idUser,State state) {
         return buyArticleCommands.stream()
                 .map(buyArticleCommand -> Sale
                         .canceled(
                                 buyArticleCommand.getId(),
                                 idUser,
                                 buyArticleCommand.getQuantity(),
-                                State.FAILED
+                                state
                         ))
                 .toList();
     }

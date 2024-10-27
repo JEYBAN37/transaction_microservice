@@ -21,7 +21,7 @@ public class HttpArticleService implements ArticleService {
     private final ArticleClient articleClient;
     private final SaleDboMapper articleDboMapper;
     @Override
-    public List<Sale> getArticlesOnlyIds(List<ArticleSaleCommand> ids, Long id) {
+    public List<Sale> getArticlesOnlyIds(List<ArticleSaleCommand> ids) {
 
         Map<Long, Integer> idQuantityMap = ids.stream()
                 .collect(Collectors.toMap(ArticleSaleCommand::getId, ArticleSaleCommand::getQuantity));
@@ -33,7 +33,7 @@ public class HttpArticleService implements ArticleService {
                 .filter(saleJson -> idQuantityMap.containsKey(saleJson.getId()))
                 .map(saleJson -> {
                     int quantity = idQuantityMap.get(saleJson.getId());
-                    return articleDboMapper.toDomainJson(saleJson, id, State.AVAILABLE, quantity);
+                    return articleDboMapper.toDomainJson(saleJson,State.AVAILABLE, quantity);
                 })
                 .toList()).orElseGet(List::of);
 

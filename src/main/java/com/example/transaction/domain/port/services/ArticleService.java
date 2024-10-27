@@ -6,5 +6,5 @@ import com.example.transaction.domain.model.entity.Sale;
 import java.util.List;
 
 public interface ArticleService {
-    List<Sale> getArticlesOnlyIds(List<ArticleSaleCommand> ids, Long id);
+    List<Sale> getArticlesOnlyIds(List<ArticleSaleCommand> ids);
 }

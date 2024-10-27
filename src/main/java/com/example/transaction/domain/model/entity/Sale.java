@@ -33,6 +33,10 @@ public class Sale {
         return new Sale(idArticle, idUser, quantity, state, BigDecimal.ZERO);
     }
 
+    public static Sale jsonSale (Long idArticle, int quantity, State state, BigDecimal price){
+        return new Sale(idArticle,0L, quantity, state, price);
+    }
+
     public BigDecimal getPrice (){return price.getPrice();}
     public int getQuantity (){return quantity.getQuantity();}
 

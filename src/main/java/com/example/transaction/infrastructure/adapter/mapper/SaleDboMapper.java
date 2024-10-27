@@ -9,13 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SaleDboMapper {
 
-    public Sale toDomainJson(SaleJson entity, Long idUser, State state , int quantity) {
+    public Sale toDomainJson(SaleJson entity, State state , int quantity) {
         if(entity == null){
             return null;
         }
-        return new Sale(
+        return  Sale.jsonSale(
                 entity.getId(),
-                idUser,
                 quantity,
                 state,
                 entity.getPrice()
