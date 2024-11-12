@@ -1,7 +1,6 @@
-package com.example.transaction.infrastructure.adapter.http;
+package com.example.transaction.infrastructure.adapter.http.client;
 
 import com.example.transaction.application.interfaces.FeignInterceptorService;
-import com.example.transaction.infrastructure.adapter.http.client.FeignClientInterceptor;
 import lombok.AllArgsConstructor;
 
 

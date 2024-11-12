@@ -9,7 +9,7 @@ import com.example.transaction.domain.port.services.ArticleService;
 import com.example.transaction.domain.service.BuyArticleServices;
 import com.example.transaction.domain.service.SupplyCreateService;
 import com.example.transaction.infrastructure.adapter.http.HttpArticleService;
-import com.example.transaction.infrastructure.adapter.http.TokenInterceptor;
+import com.example.transaction.infrastructure.adapter.http.client.TokenInterceptor;
 import com.example.transaction.infrastructure.adapter.http.client.ArticleClient;
 import com.example.transaction.infrastructure.adapter.http.client.FeignClientInterceptor;
 import com.example.transaction.infrastructure.adapter.mapper.SaleDboMapper;

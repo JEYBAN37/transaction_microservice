@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/")
+@RequestMapping("/")
 @AllArgsConstructor
 @Tag(name ="ArticleSaleCommand Command Controller")
 public class SupplyCommandController {
@@ -29,7 +29,7 @@ public class SupplyCommandController {
             @ApiResponse(responseCode = "200", description = "Supply created", content = @Content),
             @ApiResponse(responseCode = "409", content = @Content)
     })
-    @PostMapping("addSupply/")
+    @PostMapping("company/addSupply/")
     public List<SupplyDto> addSupply (@RequestBody  List<SupplyCreateCommand>  createCommand){
         return supplyCreateHandler.execute(createCommand);
     }
@@ -39,7 +39,7 @@ public class SupplyCommandController {
             @ApiResponse(responseCode = "200", description = "Supply created", content = @Content),
             @ApiResponse(responseCode = "409", content = @Content)
     })
-    @PostMapping("sale/articles/")
+    @PostMapping("secure/sale/articles/")
     public List<SaleDto> saleArticles (@RequestBody  List<ArticleSaleCommand>  createCommands,
                                        @RequestHeader("Authorization") String token){
         return buyArticleHandler.execute(token,createCommands);
